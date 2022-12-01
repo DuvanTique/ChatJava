@@ -12,7 +12,12 @@ import viewModel.PaqueteEnvio;
  */
 public class ChatCliente extends javax.swing.JFrame implements Runnable {
 
-    public ChatCliente() {
+    private int port;
+    private int port2;
+    
+    public ChatCliente(int puertoEntrada,int puertoSalida) {
+        this.port = puertoEntrada;
+        this.port2 = puertoSalida;
         initComponents();
         this.setVisible(true);
         Thread hilo1 = new Thread(this);
@@ -118,11 +123,12 @@ public class ChatCliente extends javax.swing.JFrame implements Runnable {
     private void jButtonenviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonenviarActionPerformed
        try {
             //Creacion de la conexion
-            Socket socket1 = new Socket("192.168.20.21",9000);
+            Socket socket1 = new Socket("192.168.20.21",port);
             PaqueteEnvio mensaje = new PaqueteEnvio();
             mensaje.setNombre(jTextFieldNombreUsuario.getText());
             mensaje.setMensaje(jTextFieldmensaje.getText());
             mensaje.setIp(jTextFieldIp.getText());
+            jTextAreaChat.append("\n"+mensaje.getNombre()+" : "+mensaje.getMensaje());
             ObjectOutputStream paqueteDatos = new ObjectOutputStream(socket1.getOutputStream());
             paqueteDatos.writeObject(mensaje);
             socket1.close();
@@ -147,14 +153,14 @@ public class ChatCliente extends javax.swing.JFrame implements Runnable {
     @Override
     public void run() {
         try {
-            ServerSocket servidorCliente = new ServerSocket(9090);
+            ServerSocket servidorCliente = new ServerSocket(port2);
             Socket socket2;
             PaqueteEnvio paqueteResibido;
             while (true) {                
                 socket2 = servidorCliente.accept();
                 ObjectInputStream datosEntrada = new ObjectInputStream(socket2.getInputStream());
                 paqueteResibido = (PaqueteEnvio) datosEntrada.readObject();
-                jTextAreaChat.append("\n"+paqueteResibido.getNombre()+":"+paqueteResibido.getMensaje());
+                jTextAreaChat.append("\n               >"+paqueteResibido.getNombre()+" : "+paqueteResibido.getMensaje());
             }
         } catch (IOException ex) {
             System.out.println("Error: "+ex.getMessage());

@@ -1,8 +1,6 @@
 package viewModel;
 
 import view.ChatCliente;
-import view.ChatServer;
-
 /**
  *
  * @author Duvan
@@ -10,9 +8,8 @@ import view.ChatServer;
 public class Main {
 
     public static void main(String[] args) {
-        ChatCliente chatCliente = new ChatCliente();
-        ChatServer chats = new ChatServer();
-        ChatCliente chatCliente2 = new ChatCliente();       
+        ChatCliente chatCliente = new ChatCliente(9000,9060);
+        ChatCliente chatCliente2 = new ChatCliente(9060,9000);       
     }
     
 }
